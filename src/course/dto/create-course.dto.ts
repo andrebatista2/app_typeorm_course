@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+import { Tags } from '../entities/tag.entity';
 
 export class CreateCourseDto {
   @IsString()

@@ -2,8 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   PrimaryGeneratedColumn,
+  JoinTable,
 } from 'typeorm';
+
+import { Tags } from './tag.entity';
 
 @Entity('db_courses')
 export class Course {
@@ -22,8 +26,11 @@ export class Course {
   })
   description: string;
 
-  @Column('json', { nullable: true })
-  tags: string[];
+  @JoinTable()
+  @ManyToMany(() => Tags, (tag) => tag.courses, {
+    cascade: true,
+  })
+  tags: Tags[];
 
   @CreateDateColumn({
     default: 'now()',
