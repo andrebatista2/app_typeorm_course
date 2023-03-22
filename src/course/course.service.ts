@@ -21,15 +21,16 @@ export class CourseService {
       data.tags.map((name) => this.preloadTagName(name)),
     );
     const course = this.repository.create({
-      name: data.name,
-      description: data.description,
-      tags: tags,
+      ...data,
+      tags,
     });
     return this.repository.save(course);
   }
 
   async findAll() {
-    return this.repository.find();
+    return this.repository.find({
+      relations: ['tags'],
+    });
   }
 
   async findOne(id: string) {
@@ -37,6 +38,7 @@ export class CourseService {
       where: {
         id,
       },
+      relations: ['tags'],
     });
 
     if (!courses) {
@@ -47,9 +49,13 @@ export class CourseService {
   }
 
   async update(id: string, data: UpdateCourseDto) {
+    const tags =
+      data.tags &&
+      (await Promise.all(data.tags.map((name) => this.preloadTagName(name))));
     const course = await this.repository.preload({
       id,
       ...data,
+      tags,
     });
 
     if (!course) {
