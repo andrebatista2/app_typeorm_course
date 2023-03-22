@@ -5,7 +5,9 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   JoinTable,
+  BeforeInsert,
 } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Tags } from './tag.entity';
 
@@ -36,4 +38,13 @@ export class Course {
     default: 'now()',
   })
   created_at: Date;
+
+  @BeforeInsert()
+  generatedId() {
+    if (this.id) {
+      return;
+    }
+
+    this.id = uuidv4();
+  }
 }
